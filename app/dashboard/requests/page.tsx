@@ -63,7 +63,7 @@ export default function RequestsPage() {
                   <td className="px-6 py-4 font-medium text-[#8B1A1A]">#{req.ticketId}</td>
                   <td className="px-6 py-4">
                     <p className="font-medium text-gray-800">{req.student?.name}</p>
-                    <p className="text-xs text-gray-400">{req.student?.collegeId}</p>
+                    <p className="text-xs text-gray-400">{req.student?.rollNumber}</p>
                   </td>
                   <td className="px-6 py-4 text-gray-600">{req.category?.name}</td>
                   <td className="px-6 py-4 text-gray-600">{req.school?.code}</td>

@@ -26,9 +26,9 @@ export default function DashboardPage() {
     queryFn: () => api.get('/schools').then((r) => r.data.data.schools),
   });
 
-  const { data: teachersData } = useQuery({
-    queryKey: ['teachers'],
-    queryFn: () => api.get('/teachers').then((r) => r.data.data.teachers),
+  const { data: studentsStats } = useQuery({
+    queryKey: ['students-stats'],
+    queryFn: () => api.get('/admin/students/stats').then((r) => r.data.data),
   });
 
   const STATUS_COLORS: Record<string, string> = {
@@ -46,9 +46,9 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-        <StatCard label="Schools" value={schoolsData?.length} icon="🏛️" color="bg-red-50" />
-        <StatCard label="Teachers" value={teachersData?.length} icon="👨‍🏫" color="bg-blue-50" />
-        <StatCard label="Total Requests" value={requestsData?.pagination?.total} icon="📋" color="bg-green-50" />
+        <StatCard label="Schools"        value={schoolsData?.length}              icon="🏛️" color="bg-red-50" />
+        <StatCard label="Students"       value={studentsStats?.total}             icon="👥" color="bg-blue-50" />
+        <StatCard label="Total Requests" value={requestsData?.pagination?.total}  icon="📋" color="bg-green-50" />
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">

@@ -75,7 +75,7 @@ export default function SchoolsPage() {
                 placeholder="hodcst@mru.edu.in"
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B1A1A]"
               />
-              <p className="text-xs text-gray-400 mt-1">Used for Stage 2 (HOD Review) escalation.</p>
+              <p className="text-xs text-gray-400 mt-1">Optional — for internal records.</p>
             </div>
             <div>
               <p className="text-xs text-gray-500 mb-1 font-medium">Dean Email</p>
@@ -84,7 +84,7 @@ export default function SchoolsPage() {
                 placeholder="deanengg@mru.edu.in"
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B1A1A]"
               />
-              <p className="text-xs text-gray-400 mt-1">Used for Stage 3 (Dean Review) escalation.</p>
+              <p className="text-xs text-gray-400 mt-1">CC'd on every request from students of this school.</p>
             </div>
             <div className="flex gap-2">
               <button

@@ -5,10 +5,11 @@ import { useAuthStore } from '@/lib/store';
 import api from '@/lib/api';
 
 const NAV = [
-  { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
-  { href: '/dashboard/schools', label: 'Schools', icon: '🏛️' },
+  { href: '/dashboard',          label: 'Dashboard',  icon: '🏠' },
+  { href: '/dashboard/students', label: 'Students',   icon: '👥' },
+  { href: '/dashboard/schools',  label: 'Schools',    icon: '🏛️' },
   { href: '/dashboard/categories', label: 'Categories', icon: '📂' },
-  { href: '/dashboard/requests', label: 'Requests', icon: '📋' },
+  { href: '/dashboard/requests', label: 'Requests',   icon: '📋' },
 ];
 
 export default function Sidebar() {

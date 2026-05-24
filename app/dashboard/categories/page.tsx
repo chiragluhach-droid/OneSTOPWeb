@@ -79,7 +79,7 @@ export default function CategoriesPage() {
                 placeholder="email1@mru.edu.in, email2@mru.edu.in"
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B1A1A]"
               />
-              <p className="text-xs text-gray-400 mt-1">Stage 1 recipients. Comma-separated.</p>
+              <p className="text-xs text-gray-400 mt-1">Comma-separated emails. Each = one stage. 2+ emails enables the Forward button.</p>
             </div>
             <div>
               <p className="text-xs text-gray-500 mb-1 font-medium">CC Emails</p>
