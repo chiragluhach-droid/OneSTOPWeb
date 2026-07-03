@@ -9,7 +9,7 @@ const sections = [
     content: null,
     list: [
       'Student name and university email address',
-      'Enrollment / registration number',
+      'Enrollment or registration number',
       'School or department',
       'Service requests submitted through the application',
       'Documents and files uploaded as attachments',
