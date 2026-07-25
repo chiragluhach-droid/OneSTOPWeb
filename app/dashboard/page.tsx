@@ -1,5 +1,5 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 
@@ -12,6 +12,67 @@ const StatCard = ({ label, value, icon, color }: any) => (
     </div>
   </div>
 );
+
+function StudentServicesToggle() {
+  const qc = useQueryClient();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['features'],
+    queryFn: () => api.get('/settings/features').then((r) => r.data.data.features),
+  });
+
+  const mutation = useMutation({
+    mutationFn: (enabled: boolean) =>
+      api.patch('/settings/features', { studentServicesEnabled: enabled }).then((r) => r.data.data.features),
+    onSuccess: (features) => {
+      qc.setQueryData(['features'], features);
+    },
+  });
+
+  const enabled = data?.studentServicesEnabled ?? false;
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-xl flex-shrink-0">🎓</div>
+          <div>
+            <p className="font-semibold text-gray-900">Student Services (OneSTOP)</p>
+            <p className="text-sm text-gray-500 mt-0.5">
+              {enabled
+                ? 'Students can log in and access OneSTOP.'
+                : 'Login is blocked — a "Coming Soon" message is shown to students.'}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => mutation.mutate(!enabled)}
+          disabled={isLoading || mutation.isPending}
+          className={`relative inline-flex h-7 w-13 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+            enabled ? 'bg-red-700' : 'bg-gray-200'
+          }`}
+          style={{ minWidth: 52 }}
+          role="switch"
+          aria-checked={enabled}
+        >
+          <span
+            className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+              enabled ? 'translate-x-6' : 'translate-x-0'
+            }`}
+          />
+        </button>
+      </div>
+      {mutation.isError && (
+        <p className="mt-3 text-xs text-red-600">Failed to update — please try again.</p>
+      )}
+      {mutation.isSuccess && (
+        <p className="mt-3 text-xs text-green-600">
+          Student Services is now <strong>{enabled ? 'enabled' : 'disabled'}</strong>.
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const admin = useAuthStore((s) => s.admin);
@@ -45,10 +106,15 @@ export default function DashboardPage() {
         <p className="text-gray-500 text-sm mt-1">OneSTOP Admin Panel — Manav Rachna University</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
         <StatCard label="Schools"        value={schoolsData?.length}              icon="🏛️" color="bg-red-50" />
         <StatCard label="Students"       value={studentsStats?.total}             icon="👥" color="bg-blue-50" />
         <StatCard label="Total Requests" value={requestsData?.pagination?.total}  icon="📋" color="bg-green-50" />
+      </div>
+
+      <div className="mb-8">
+        <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Feature Controls</h3>
+        <StudentServicesToggle />
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
