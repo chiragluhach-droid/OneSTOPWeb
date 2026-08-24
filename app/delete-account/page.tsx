@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Delete Account — OneSTOP, Manav Rachna University',
+  title: 'Delete Account — MR One, Manav Rachna University',
 };
 
 export default function DeleteAccountPage() {
@@ -12,7 +12,7 @@ export default function DeleteAccountPage() {
             Manav Rachna University
           </p>
           <h1 className="text-3xl font-bold tracking-tight">Delete Your Account</h1>
-          <p className="mt-2 text-[#f5c6c6] text-sm">OneSTOP — Student Workflow Platform</p>
+          <p className="mt-2 text-[#f5c6c6] text-sm">MR One — Student Workflow Platform</p>
         </div>
       </header>
 
@@ -20,7 +20,7 @@ export default function DeleteAccountPage() {
 
         {/* Intro */}
         <p className="text-gray-600 text-[15px] leading-relaxed border-l-4 border-[#8B1A1A] pl-4">
-          You may request permanent deletion of your OneSTOP account at any time by contacting
+          You may request permanent deletion of your MR One account at any time by contacting
           our support team. Requests are processed within 7 working days after identity verification.
         </p>
 
@@ -33,7 +33,7 @@ export default function DeleteAccountPage() {
           <div className="px-6 py-5 flex flex-col gap-4">
             {[
               { step: '1', text: 'Send an email to onestopsolution@mru.edu.in with the subject line: Account Deletion Request' },
-              { step: '2', text: 'Include your University Registration Number and the email address registered with OneSTOP.' },
+              { step: '2', text: 'Include your University Registration Number and the email address registered with MR One.' },
               { step: '3', text: 'Our team will verify your identity and process the deletion within 7 working days.' },
             ].map(({ step, text }) => (
               <div key={step} className="flex items-start gap-4">
@@ -119,7 +119,7 @@ export default function DeleteAccountPage() {
         </section>
 
         <p className="text-center text-xs text-gray-400 pb-4">
-          © {new Date().getFullYear()} Manav Rachna University · OneSTOP
+          © {new Date().getFullYear()} Manav Rachna University · MR One
         </p>
       </main>
     </div>

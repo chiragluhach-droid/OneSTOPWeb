@@ -3,7 +3,7 @@ import "./globals.css";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "OneSTOP Admin — Manav Rachna University",
+  title: "MR One Admin — Manav Rachna University",
   description: "Workflow configuration panel",
 };
 

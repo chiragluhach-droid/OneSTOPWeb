@@ -32,7 +32,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-[#8B1A1A] px-8 py-8 text-center">
-            <h1 className="text-3xl font-bold text-white">OneSTOP</h1>
+            <h1 className="text-3xl font-bold text-white">MR One</h1>
             <p className="text-red-200 text-sm mt-1">Manav Rachna University</p>
             <p className="text-red-300 text-xs mt-2">Admin Control Panel</p>
           </div>

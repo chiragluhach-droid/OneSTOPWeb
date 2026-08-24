@@ -37,10 +37,10 @@ function StudentServicesToggle() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center text-xl flex-shrink-0">🎓</div>
           <div>
-            <p className="font-semibold text-gray-900">Student Services (OneSTOP)</p>
+            <p className="font-semibold text-gray-900">Student Services (MR One)</p>
             <p className="text-sm text-gray-500 mt-0.5">
               {enabled
-                ? 'Students can log in and access OneSTOP.'
+                ? 'Students can log in and access MR One.'
                 : 'Login is blocked — a "Coming Soon" message is shown to students.'}
             </p>
           </div>
@@ -103,7 +103,7 @@ export default function DashboardPage() {
     <div className="p-8">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900">Welcome, {admin?.name} 👋</h2>
-        <p className="text-gray-500 text-sm mt-1">OneSTOP Admin Panel — Manav Rachna University</p>
+        <p className="text-gray-500 text-sm mt-1">MR One Admin Panel — Manav Rachna University</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">

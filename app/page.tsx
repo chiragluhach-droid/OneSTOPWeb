@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'OneSTOP — Manav Rachna University',
+  title: 'MR One — Manav Rachna University',
   description:
-    'OneSTOP is the official student workflow automation platform for Manav Rachna University. Raise service requests, track approvals, and get notified — all in one place.',
+    'MR One is the official student workflow automation platform for Manav Rachna University. Raise service requests, track approvals, and get notified — all in one place.',
 };
 
 const features = [
@@ -56,7 +56,7 @@ export default function LandingPage() {
       <nav style={{ background: '#8B1A1A' }} className="sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <span className="text-white font-bold text-lg tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>
-            OneSTOP
+            MR One
           </span>
           <div className="flex items-center gap-1">
             <Link
@@ -96,7 +96,7 @@ export default function LandingPage() {
             Your University Services,<br />One Place.
           </h1>
           <p className="text-[#f5c6c6] text-base leading-relaxed max-w-xl" style={{ textWrap: 'balance' }}>
-            OneSTOP is the official student workflow platform for Manav Rachna University.
+            MR One is the official student workflow platform for Manav Rachna University.
             Raise service requests, track approvals, and stay informed — without chasing anyone.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
@@ -120,7 +120,7 @@ export default function LandingPage() {
         </svg>
       </div>
 
-      {/* What is OneSTOP */}
+      {/* What is MR One */}
       <section className="max-w-5xl mx-auto px-6 py-16 flex flex-col gap-10 flex-1">
         <div className="text-center flex flex-col gap-2">
           <p className="text-xs font-semibold tracking-widest uppercase text-[#8B1A1A]">The Platform</p>
@@ -131,7 +131,7 @@ export default function LandingPage() {
             Everything a student needs to get things done.
           </h2>
           <p className="text-gray-500 text-sm max-w-lg mx-auto leading-relaxed" style={{ textWrap: 'balance' }}>
-            From academic support to administrative services — OneSTOP routes your requests
+            From academic support to administrative services — MR One routes your requests
             to the right department and keeps you updated every step of the way.
           </p>
         </div>
@@ -155,7 +155,7 @@ export default function LandingPage() {
         <div className="bg-white rounded-2xl border border-[#ecdada] shadow-sm overflow-hidden">
           <div className="px-6 py-5 border-b border-[#ecdada] bg-[#fdf8f8] flex items-center gap-3">
             <span className="w-1 h-5 rounded-full bg-[#8B1A1A] flex-shrink-0" />
-            <h2 className="text-[15px] font-semibold text-gray-900">Who is OneSTOP for?</h2>
+            <h2 className="text-[15px] font-semibold text-gray-900">Who is MR One for?</h2>
           </div>
           <div className="px-6 py-5 grid sm:grid-cols-3 gap-5">
             {[
@@ -176,7 +176,7 @@ export default function LandingPage() {
       <footer style={{ background: '#8B1A1A' }} className="mt-auto">
         <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-white font-bold text-base" style={{ fontFamily: 'Georgia, serif' }}>OneSTOP</p>
+            <p className="text-white font-bold text-base" style={{ fontFamily: 'Georgia, serif' }}>MR One</p>
             <p className="text-[#f5c6c6] text-xs mt-0.5">Manav Rachna University · Faridabad, Haryana</p>
           </div>
           <div className="flex items-center gap-5">

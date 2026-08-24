@@ -26,7 +26,7 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-[#8B1A1A] min-h-screen flex flex-col">
       <div className="px-6 py-6 border-b border-red-700">
-        <h1 className="text-2xl font-bold text-white">OneSTOP</h1>
+        <h1 className="text-2xl font-bold text-white">MR One</h1>
         <p className="text-red-300 text-xs mt-0.5">Admin Panel</p>
         <p className="text-red-200 text-xs mt-2 font-medium">Manav Rachna University</p>
       </div>

@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Privacy Policy — OneSTOP, Manav Rachna University',
+  title: 'Privacy Policy — MR One, Manav Rachna University',
 };
 
 const sections = [
@@ -47,7 +47,7 @@ const sections = [
     title: 'Data Sharing',
     content: null,
     list: [
-      'OneSTOP does not sell or share personal information with third parties for advertising or commercial purposes.',
+      'MR One does not sell or share personal information with third parties for advertising or commercial purposes.',
       'Information is shared only with authorised university officials responsible for processing student requests.',
     ],
   },
@@ -84,7 +84,7 @@ export default function PrivacyPolicyPage() {
             Manav Rachna University
           </p>
           <h1 className="text-3xl font-bold tracking-tight">Privacy Policy</h1>
-          <p className="mt-2 text-[#f5c6c6] text-sm">OneSTOP — Student Workflow Platform</p>
+          <p className="mt-2 text-[#f5c6c6] text-sm">MR One — Student Workflow Platform</p>
           <p className="mt-5 inline-block bg-[#6e1414] text-[#f5c6c6] text-xs px-3 py-1 rounded-full">
             Effective Date: July 2026
           </p>
@@ -94,7 +94,7 @@ export default function PrivacyPolicyPage() {
       {/* Intro */}
       <div className="max-w-3xl mx-auto px-6 pt-10 pb-2">
         <p className="text-gray-600 text-[15px] leading-relaxed border-l-4 border-[#8B1A1A] pl-4">
-          OneSTOP is the official student workflow automation platform developed for Manav Rachna
+          MR One is the official student workflow automation platform developed for Manav Rachna
           University. This Privacy Policy explains how the application collects, uses, stores, and
           protects user information.
         </p>
@@ -134,7 +134,7 @@ export default function PrivacyPolicyPage() {
               For questions or concerns regarding this Privacy Policy, please reach out:
             </p>
             <div className="flex flex-col gap-1.5 text-sm">
-              <p className="font-medium">OneSTOP Support</p>
+              <p className="font-medium">MR One Support</p>
               <a
                 href="mailto:onestopsolution@mru.edu.in"
                 className="text-[#f9d9d9] underline underline-offset-2 hover:text-white transition-colors"
@@ -147,7 +147,7 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <p className="text-center text-xs text-gray-400 pb-4">
-          © {new Date().getFullYear()} Manav Rachna University · OneSTOP
+          © {new Date().getFullYear()} Manav Rachna University · MR One
         </p>
       </main>
     </div>
