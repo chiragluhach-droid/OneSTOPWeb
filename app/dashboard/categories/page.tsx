@@ -413,8 +413,8 @@ function WorkflowPreview({
               <span className="text-slate-500">
                 {' '}gets an action email
                 {i < owners.length - 1
-                  ? ' with Resolve / Reject / Forward.'
-                  : ' with Resolve / Reject (last stage — no Forward).'}
+                  ? ' with Resolve / Forward.'
+                  : ' with Resolve only (last stage — no Forward).'}
               </span>
             </p>
           </li>
@@ -585,10 +585,6 @@ function DetailModal({
                       <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700
                                        text-[11px] font-medium border border-emerald-200">
                         Resolve
-                      </span>
-                      <span className="px-2 py-0.5 rounded-md bg-red-50 text-red-700
-                                       text-[11px] font-medium border border-red-200">
-                        Reject
                       </span>
                       {i < owners.length - 1 ? (
                         <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700
