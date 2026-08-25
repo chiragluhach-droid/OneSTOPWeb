@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
+/* The admin dashboard is a light-only design — every surface is a hardcoded
+   white/gray-50 card. Honouring the OS dark preference only flipped the
+   inherited body text to near-white, leaving invisible text on those white
+   cards, so the palette is pinned to light and `color-scheme` keeps native
+   controls (inputs, selects, scrollbars) light to match. */
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -12,15 +18,22 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Form controls inherit the browser's UA colour otherwise, which in a dark OS
+   theme renders typed text almost white inside these light inputs. */
+input,
+textarea,
+select {
+  color: #171717;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+  opacity: 1;
 }
