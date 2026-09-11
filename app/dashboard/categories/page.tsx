@@ -413,8 +413,8 @@ function WorkflowPreview({
               <span className="text-slate-500">
                 {' '}gets an action email
                 {i < owners.length - 1
-                  ? ' with Resolve / Forward.'
-                  : ' with Resolve only (last stage — no Forward).'}
+                  ? ' with In Progress / Resolve / Forward.'
+                  : ' with In Progress / Resolve (last stage — no Forward).'}
               </span>
             </p>
           </li>
@@ -582,6 +582,10 @@ function DetailModal({
                       </p>
                     )}
                     <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      <span className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-700
+                                       text-[11px] font-medium border border-orange-200">
+                        In Progress
+                      </span>
                       <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700
                                        text-[11px] font-medium border border-emerald-200">
                         Resolve

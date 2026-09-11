@@ -6,6 +6,7 @@ import api from '@/lib/api';
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
   in_review: 'bg-blue-100 text-blue-700',
+  in_progress: 'bg-orange-100 text-orange-700',
   resolved: 'bg-green-100 text-green-700',
   rejected: 'bg-red-100 text-red-700',
   escalated: 'bg-purple-100 text-purple-700',
@@ -33,6 +34,7 @@ export default function RequestsPage() {
           <option value="pending">Pending</option>
           <option value="in_review">In Review</option>
           <option value="resolved">Resolved</option>
+          <option value="in_progress">In Progress</option>
           <option value="rejected">Rejected</option>
         </select>
       </div>
