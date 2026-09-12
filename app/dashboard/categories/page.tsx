@@ -41,6 +41,8 @@ type Category = {
   escalation?: Partial<Escalation>;
 };
 
+type Routing = { intakeEmail: string; intakeLabel: string };
+
 type School = {
   _id: string;
   name: string;
@@ -375,56 +377,50 @@ function RecipientEditor({
 }
 
 function WorkflowPreview({
-  owners, cc, escalation,
+  cc, escalation, routing,
 }: {
-  owners: string[];
   cc: string[];
   escalation: Escalation;
+  routing: Routing | null;
 }) {
-  if (owners.length === 0) {
-    return (
-      <div className="flex items-start gap-2.5 p-3.5 bg-amber-50 border border-amber-200 rounded-lg">
-        <AlertTriangle size={15} className="text-amber-600 shrink-0 mt-0.5" />
-        <p className="text-xs text-amber-800 leading-relaxed">
-          With no process owners, students <strong>cannot submit</strong> a request in this category —
-          the app rejects it with &ldquo;no process owners configured&rdquo;.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
       <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-3">
         What happens on submit
       </p>
       <ol className="flex flex-col gap-2">
-        {owners.map((entry, i) => (
-          <li key={entry} className="flex items-start gap-2.5">
-            <span
-              className="shrink-0 w-5 h-5 rounded-full text-[10px] font-bold text-white
-                         flex items-center justify-center mt-0.5"
-              style={{ background: MAROON }}
-            >
-              {i + 1}
+        <li className="flex items-start gap-2.5">
+          <span className="shrink-0 w-5 h-5 rounded-full text-[10px] font-bold text-white
+                           flex items-center justify-center mt-0.5"
+                style={{ background: MAROON }}>
+            1
+          </span>
+          <p className="text-xs text-slate-700 leading-relaxed min-w-0">
+            <span className="font-medium break-all">
+              {routing?.intakeEmail || 'the Student Welfare desk'}
             </span>
-            <p className="text-xs text-slate-700 leading-relaxed min-w-0">
-              <span className="font-medium break-all">{labelFor(entry)}</span>
-              <span className="text-slate-500">
-                {' '}gets an action email
-                {i < owners.length - 1
-                  ? ' with In Progress / Resolve / Forward.'
-                  : ' with In Progress / Resolve (last stage — no Forward).'}
-              </span>
-            </p>
-          </li>
-        ))}
+            <span className="text-slate-500">
+              {' '}gets an action email with In Progress / Resolve / Forward.
+            </span>
+          </p>
+        </li>
+        <li className="flex items-start gap-2.5">
+          <span className="shrink-0 w-5 h-5 rounded-full bg-blue-700 text-white text-[10px]
+                           font-bold flex items-center justify-center mt-0.5">
+            2
+          </span>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            If forwarded, they type the address themselves — and that person gets the same options.
+          </p>
+        </li>
         <li className="flex items-start gap-2.5">
           <span className="shrink-0 w-5 h-5 rounded-full bg-emerald-600 text-white
                            flex items-center justify-center mt-0.5">
             <Check size={11} />
           </span>
-          <p className="text-xs text-slate-500 leading-relaxed">Student is emailed on every action.</p>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Student is emailed on every action, and told who it moved to.
+          </p>
         </li>
       </ol>
 
@@ -448,7 +444,7 @@ function WorkflowPreview({
           <p className="flex items-start gap-2 text-xs text-slate-500">
             <Clock size={13} className="shrink-0 mt-0.5" />
             <span>
-              If a stage sits untouched for{' '}
+              If it sits untouched for{' '}
               <span className="font-medium text-slate-600">{escalation.afterHours}h</span>,{' '}
               {escalation.recipients.map(labelFor).join(', ')} get an overdue notice.
             </span>
@@ -461,19 +457,18 @@ function WorkflowPreview({
 
 /* ───────────────────────── Detail ───────────────────────── */
 function DetailModal({
-  cat, onClose, onEdit, onDelete,
+  cat, routing, onClose, onEdit, onDelete,
 }: {
   cat: Category | null;
+  routing: Routing | null;
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
   if (!cat) return null;
 
-  const owners = cat.processOwners || [];
   const cc = cat.ccEmails || [];
   const esc = { ...emptyEscalation, ...(cat.escalation || {}) };
-  const [first] = owners;
 
   return (
     <Modal
@@ -516,98 +511,51 @@ function DetailModal({
           </section>
         )}
 
-        {/* Goes first to */}
+        {/* Where it goes */}
         <section>
           <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2">
             Goes first to
           </p>
-          {first ? (
-            <div className="flex items-center gap-3.5 p-4 rounded-xl border-2"
-                 style={{ borderColor: MAROON, background: '#fdf5f5' }}>
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                   style={{ background: MAROON }}>
-                {isDynamic(first)
-                  ? <GraduationCap size={18} className="text-white" />
-                  : <Mail size={18} className="text-white" />}
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-gray-900 break-all">{labelFor(first)}</p>
-                <p className="text-xs text-gray-600 mt-0.5">
-                  {isDynamic(first)
-                    ? `Resolved to ${DYNAMIC[first].hint} when they submit.`
-                    : 'Receives the action email the moment a student submits.'}
-                </p>
-              </div>
+          <div className="flex items-center gap-3.5 p-4 rounded-xl border-2"
+               style={{ borderColor: MAROON, background: '#fdf5f5' }}>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                 style={{ background: MAROON }}>
+              <Inbox size={18} className="text-white" />
             </div>
-          ) : (
-            <div className="flex items-start gap-2.5 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-              <AlertTriangle size={16} className="text-amber-600 shrink-0 mt-0.5" />
-              <p className="text-sm text-amber-800 leading-relaxed">
-                No process owner set — students <strong>cannot submit</strong> requests in this category.
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-gray-900">
+                {routing?.intakeLabel || 'Student Welfare desk'}
               </p>
+              <p className="text-sm text-gray-700 break-all">{routing?.intakeEmail || '—'}</p>
             </div>
-          )}
-        </section>
+          </div>
 
-        {/* Chain */}
-        {owners.length > 0 && (
-          <section>
-            <p className="flex items-center gap-1.5 text-[11px] font-semibold text-gray-500
-                          uppercase tracking-wider mb-3">
-              <Users size={12} /> Approval chain
-              <span className="font-normal normal-case tracking-normal text-gray-400">
-                · {owners.length} stage{owners.length === 1 ? '' : 's'}
-              </span>
+          <div className="mt-3 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2.5">
+              From there
             </p>
-
-            <ol className="flex flex-col">
-              {owners.map((entry, i) => (
-                <li key={entry} className="flex gap-3.5">
-                  <div className="flex flex-col items-center shrink-0">
-                    <span
-                      className="w-7 h-7 rounded-full text-[11px] font-bold text-white
-                                 flex items-center justify-center"
-                      style={{ background: MAROON }}
-                    >
-                      {i + 1}
-                    </span>
-                    {i < owners.length - 1 && <span className="w-px flex-1 bg-gray-200 my-1" />}
-                  </div>
-
-                  <div className={`min-w-0 flex-1 ${i < owners.length - 1 ? 'pb-4' : ''}`}>
-                    <p className="text-sm font-medium text-gray-900 break-all">{labelFor(entry)}</p>
-                    {isDynamic(entry) && (
-                      <p className="text-xs text-indigo-600 mt-0.5">
-                        Resolved per student — {DYNAMIC[entry].hint}
-                      </p>
-                    )}
-                    <div className="flex flex-wrap gap-1.5 mt-1.5">
-                      <span className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-700
-                                       text-[11px] font-medium border border-orange-200">
-                        In Progress
-                      </span>
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700
-                                       text-[11px] font-medium border border-emerald-200">
-                        Resolve
-                      </span>
-                      {i < owners.length - 1 ? (
-                        <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700
-                                         text-[11px] font-medium border border-blue-200">
-                          Forward → stage {i + 2}
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-md bg-gray-100 text-gray-500
-                                         text-[11px] font-medium border border-gray-200">
-                          Last stage — no Forward
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
+            <ul className="flex flex-col gap-2">
+              <li className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed">
+                <span className="shrink-0 px-2 py-0.5 rounded-md bg-orange-50 border
+                                 border-orange-200 text-orange-700 font-medium">In Progress</span>
+                <span className="text-slate-500">tells the student it&apos;s being worked on; stays open.</span>
+              </li>
+              <li className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed">
+                <span className="shrink-0 px-2 py-0.5 rounded-md bg-emerald-50 border
+                                 border-emerald-200 text-emerald-700 font-medium">Resolve</span>
+                <span className="text-slate-500">closes it with a message to the student.</span>
+              </li>
+              <li className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed">
+                <span className="shrink-0 px-2 py-0.5 rounded-md bg-blue-50 border
+                                 border-blue-200 text-blue-700 font-medium">Forward</span>
+                <span className="text-slate-500">
+                  sends it to any address they type. That person gets the same three options and
+                  can forward it onwards — the chain is as long as it needs to be.
+                </span>
+              </li>
+            </ul>
+          </div>
+        </section>
 
         {/* CC */}
         <section>
@@ -686,11 +634,12 @@ function DetailModal({
 
 /* ───────────────────────── Editor ───────────────────────── */
 function EditorModal({
-  open, editing, schools, onClose, onSave, saving, error,
+  open, editing, schools, routing, onClose, onSave, saving, error,
 }: {
   open: boolean;
   editing: Category | null;
   schools: School[];
+  routing: Routing | null;
   onClose: () => void;
   onSave: (form: Form) => void;
   saving: boolean;
@@ -826,26 +775,29 @@ function EditorModal({
           <div>
             <h4 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
               <Users size={15} style={{ color: MAROON }} />
-              To — approval chain
+              Who receives it
             </h4>
-            <p className="flex items-start gap-1.5 text-xs text-gray-500 mt-1.5 leading-relaxed">
-              <Info size={13} className="shrink-0 mt-0.5" />
-              <span>
-                Each entry is <strong>one approval stage, in order</strong>. Use{' '}
-                <strong>Add role</strong> for &ldquo;Respective Dean/HOD&rdquo; — those resolve to the
-                dean or HOD of whichever school the student belongs to.
-              </span>
-            </p>
           </div>
 
-          <RecipientEditor
-            value={form.processOwners}
-            onChange={(processOwners) => setForm({ ...form, processOwners })}
-            ordered
-            schools={schools}
-            placeholder="owner@mru.edu.in — press Enter to add"
-            emptyHint="No process owners yet — add at least one so students can submit."
-          />
+          <div className="flex items-start gap-3.5 p-4 rounded-xl border-2"
+               style={{ borderColor: MAROON, background: '#fdf5f5' }}>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                 style={{ background: MAROON }}>
+              <Inbox size={18} className="text-white" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-gray-900">
+                {routing?.intakeLabel || 'Student Welfare desk'}
+              </p>
+              <p className="text-sm text-gray-700 break-all">{routing?.intakeEmail || '—'}</p>
+              <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                Every request in every category goes here first. They mark it{' '}
+                <strong>In Progress</strong>, <strong>Resolve</strong> it, or{' '}
+                <strong>Forward</strong> it by typing an address — and whoever receives it
+                gets the same options. Routing is decided per request, not per category.
+              </p>
+            </div>
+          </div>
 
           <div className="mt-1">
             <h4 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
@@ -955,7 +907,7 @@ function EditorModal({
           )}
         </section>
 
-        <WorkflowPreview owners={form.processOwners} cc={form.ccEmails} escalation={esc} />
+        <WorkflowPreview cc={form.ccEmails} escalation={esc} routing={routing} />
       </div>
     </Modal>
   );
@@ -963,7 +915,6 @@ function EditorModal({
 
 /* ───────────────────────── Card ───────────────────────── */
 function CategoryCard({ cat, onOpen }: { cat: Category; onOpen: () => void }) {
-  const owners = cat.processOwners || [];
   const cc = cat.ccEmails || [];
   const esc = { ...emptyEscalation, ...(cat.escalation || {}) };
 
@@ -1009,26 +960,10 @@ function CategoryCard({ cat, onOpen }: { cat: Category; onOpen: () => void }) {
 
       <div className="mt-auto px-5 py-3.5 border-t border-gray-100 bg-gray-50/60 rounded-b-xl
                       flex flex-wrap items-center gap-x-4 gap-y-2">
-        {owners.length === 0 ? (
-          <span className="inline-flex items-center gap-1.5 text-xs text-amber-700">
-            <AlertTriangle size={12} /> No process owner
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 min-w-0">
-            <span className="shrink-0 w-4 h-4 rounded text-[9px] font-bold text-white
-                             flex items-center justify-center"
-                  style={{ background: MAROON }}>
-              1
-            </span>
-            <span className={`truncate ${isDynamic(owners[0]) ? 'text-indigo-700 font-medium' : ''}`}
-                  title={labelFor(owners[0])}>
-              {labelFor(owners[0])}
-            </span>
-            {owners.length > 1 && (
-              <span className="shrink-0 text-gray-400">+{owners.length - 1} more</span>
-            )}
-          </span>
-        )}
+        <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 min-w-0">
+          <Inbox size={12} className="shrink-0" />
+          <span className="truncate">Student Welfare desk</span>
+        </span>
 
         <span className="inline-flex items-center gap-1.5 text-xs text-gray-500 ml-auto shrink-0">
           <Send size={11} />
@@ -1059,6 +994,11 @@ export default function CategoriesPage() {
   const { data: schools } = useQuery<School[]>({
     queryKey: ['schools'],
     queryFn: () => api.get('/schools').then((r) => r.data.data.schools),
+  });
+
+  const { data: routing } = useQuery<Routing>({
+    queryKey: ['routing'],
+    queryFn: () => api.get('/settings/routing').then((r) => r.data.data.routing),
   });
 
   const flash = (msg: string) => {
@@ -1104,11 +1044,6 @@ export default function CategoriesPage() {
         .some((f) => String(f).toLowerCase().includes(q))
     );
   }, [categories, search]);
-
-  const unrouted = useMemo(
-    () => (categories || []).filter((c) => !c.processOwners?.length).length,
-    [categories]
-  );
 
   const openNew = () => { setEditing(null); setError(''); setModalOpen(true); };
   const openEditFromDetail = () => {
@@ -1164,13 +1099,6 @@ export default function CategoriesPage() {
           </p>
         )}
 
-        {unrouted > 0 && !search && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md
-                           bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium">
-            <AlertTriangle size={12} />
-            {unrouted} without a process owner
-          </span>
-        )}
       </div>
 
       {/* Grid */}
@@ -1232,6 +1160,7 @@ export default function CategoriesPage() {
 
       <DetailModal
         cat={detail}
+        routing={routing || null}
         onClose={() => setDetail(null)}
         onEdit={openEditFromDetail}
         onDelete={() => { if (detail) { setDeleteTarget(detail); setDetail(null); } }}
@@ -1241,6 +1170,7 @@ export default function CategoriesPage() {
         open={modalOpen}
         editing={editing}
         schools={schools || []}
+        routing={routing || null}
         onClose={() => { setModalOpen(false); setEditing(null); setError(''); }}
         onSave={(form) => save.mutate(form)}
         saving={save.isPending}
