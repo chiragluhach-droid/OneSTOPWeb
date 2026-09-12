@@ -436,7 +436,10 @@ function WorkflowPreview({
               took that action.
             </span>
           ) : (
-            <span>No FYI copies are sent for this category.</span>
+            <span>
+              Only the student and the intake desk are updated — the desk is told whenever a
+              forwarded person acts on it.
+            </span>
           )}
         </p>
 
@@ -568,7 +571,8 @@ function DetailModal({
             <div className="flex items-start gap-2.5 p-4 bg-gray-50 border border-gray-200 rounded-xl">
               <Ban size={16} className="text-gray-400 shrink-0 mt-0.5" />
               <p className="text-sm text-gray-600 leading-relaxed">
-                Nobody is CC&apos;d. No FYI email is sent for this category.
+                Nobody extra is copied. Updates go to the student, and to the{' '}
+                {routing?.intakeLabel || 'Student Welfare'} desk whenever a forwarded person acts.
               </p>
             </div>
           ) : (
@@ -805,8 +809,8 @@ function EditorModal({
               CC — FYI copy
             </h4>
             <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
-              Optional. Gets a read-only copy on submit and on every action — except whoever took
-              that action. Nobody is CC&apos;d automatically.
+              Usually empty. The Student Welfare desk is already updated automatically whenever a
+              forwarded person acts, so add someone here only if a third party must also be copied.
             </p>
           </div>
 
