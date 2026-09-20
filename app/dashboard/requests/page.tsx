@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 
+import { useRouter } from 'next/navigation';
+
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-700',
   in_review: 'bg-blue-100 text-blue-700',
@@ -13,6 +15,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function RequestsPage() {
+  const router = useRouter();
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
 
@@ -61,7 +64,9 @@ export default function RequestsPage() {
                 <tr><td colSpan={7} className="px-6 py-8 text-center text-gray-400">No requests found</td></tr>
               )}
               {data?.requests?.map((req: any) => (
-                <tr key={req._id} className="hover:bg-gray-50">
+                <tr key={req._id} 
+                    onClick={() => router.push(`/dashboard/requests/${req._id}`)}
+                    className="hover:bg-gray-50 cursor-pointer">
                   <td className="px-6 py-4 font-medium text-[#8B1A1A]">#{req.ticketId}</td>
                   <td className="px-6 py-4">
                     <p className="font-medium text-gray-800">{req.student?.name}</p>
