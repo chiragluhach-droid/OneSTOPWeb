@@ -203,12 +203,31 @@ export default function SettingsPage() {
               </p>
             </div>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-2">
-              <p className="text-xs text-amber-800 leading-relaxed">
-                <strong>How it works:</strong> When a student submits a request, the OneStop admin receives it.
-                If the admin doesn&apos;t forward it within <strong>{escalation.afterHours} hours</strong>, it gets escalated to <strong>{escalation.recipientEmail || '(not set)'}</strong>.
-                Similarly, if a Dean/HOD/Director receives a forwarded request and doesn&apos;t act on it within <strong>{escalation.afterHours} hours</strong>, it also gets escalated.
-                The escalation email clearly states that the concern was not addressed by the assigned person.
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-5 mt-2">
+              <p className="text-sm font-semibold text-amber-900 mb-3">📌 How Auto-Escalation Works</p>
+              <ol className="text-xs text-amber-800 leading-relaxed space-y-2 list-decimal list-inside">
+                <li>
+                  A student submits a request → <strong>OneStop Admin</strong> receives it via email.
+                </li>
+                <li>
+                  If the <strong>OneStop Admin does not forward</strong> the request within{' '}
+                  <strong>{escalation.afterHours} hour{escalation.afterHours !== 1 ? 's' : ''}</strong>,
+                  it is <strong>automatically escalated</strong> to{' '}
+                  <strong>{escalation.recipientEmail || '(email not set yet)'}</strong>.
+                </li>
+                <li>
+                  If the admin forwards it to any Dean / HOD / Director and <strong>that person also
+                  does not take any action</strong> (resolve, forward, or mark in-progress) within{' '}
+                  <strong>{escalation.afterHours} hour{escalation.afterHours !== 1 ? 's' : ''}</strong>,
+                  it is <strong>escalated again</strong> to the same email.
+                </li>
+                <li>
+                  The escalation email <strong>clearly mentions the name/email of the person who did not act</strong> and
+                  when they were originally notified.
+                </li>
+              </ol>
+              <p className="text-xs text-amber-700 mt-3 italic">
+                💡 Tip: You can change the email and time window anytime. New settings apply to all future requests immediately.
               </p>
             </div>
           </div>
