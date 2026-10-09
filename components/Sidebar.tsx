@@ -11,6 +11,7 @@ const NAV = [
   { href: '/dashboard/schools',  label: 'Schools',    icon: '🏛️' },
   { href: '/dashboard/categories', label: 'Categories', icon: '📂' },
   { href: '/dashboard/requests', label: 'Requests',   icon: '📋' },
+  { href: '/dashboard/broadcasts', label: 'Announcements', icon: '📢' },
   { href: '/dashboard/settings', label: 'Settings',   icon: '⚙️' },
 ];
 
