@@ -308,8 +308,9 @@ export default function SettingsPage() {
                   <strong>{escalation.recipientEmail || '(email not set yet)'}</strong>.
                 </li>
                 <li>
-                  Once the desk acts, the request shows as <strong>In Progress</strong>. When a dean / HOD picks it up it
-                  becomes <strong>In Review</strong>, and <strong>Resolved</strong> when closed.
+                  While the desk is working on it themselves the request shows as <strong>In Progress</strong>.
+                  The moment it is forwarded to a dean, HOD or director it becomes <strong>In Review</strong> and
+                  stays there until it is <strong>Resolved</strong>.
                 </li>
                 <li>
                   A forwarded dean / HOD / director who does not act within{' '}
