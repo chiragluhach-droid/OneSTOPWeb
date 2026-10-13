@@ -37,3 +37,32 @@ textarea::placeholder {
   color: #9ca3af;
   opacity: 1;
 }
+
+/* ── Public landing page ──────────────────────────────────────────────────
+   Keyframes for the marquee and the demo caption. Both are referenced through
+   Tailwind's `motion-safe:` variant or an arbitrary animation utility, so they
+   never run when the visitor has asked for reduced motion. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
