@@ -8,7 +8,24 @@ type Escalation = {
   recipientLabel: string;
   intakeHours: number;
   forwardedHours: number;
+  reportingChain: boolean;
+  finalAuthorityEmail: string;
+  finalAuthorityLabel: string;
 };
+
+type WorkingTime = {
+  enabled: boolean;
+  workingDays: number[];
+  holidays: string[];
+  timezone?: string;
+};
+
+type AutoReply = {
+  enabled: boolean;
+  message: string;
+};
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 type Reopen = {
   enabled: boolean;
@@ -56,7 +73,19 @@ export default function SettingsPage() {
     recipientLabel: 'Dean of Student Welfare',
     intakeHours: 3,
     forwardedHours: 48,
+    reportingChain: true,
+    finalAuthorityEmail: '',
+    finalAuthorityLabel: 'Vice Chancellor',
   });
+
+  const [workingTime, setWorkingTime] = useState<WorkingTime>({
+    enabled: true,
+    workingDays: [1, 2, 3, 4, 5],
+    holidays: [],
+  });
+  const [newHoliday, setNewHoliday] = useState('');
+
+  const [autoReply, setAutoReply] = useState<AutoReply>({ enabled: true, message: '' });
 
   const [reopen, setReopen] = useState<Reopen>({ enabled: true, withinDays: 7, maxTimes: 2 });
 
@@ -71,12 +100,14 @@ export default function SettingsPage() {
   useEffect(() => {
     (async () => {
       try {
-        const [featRes, routRes, escRes, reopenRes, verRes] = await Promise.all([
+        const [featRes, routRes, escRes, reopenRes, verRes, workRes, replyRes] = await Promise.all([
           api.get('/settings/features'),
           api.get('/settings/routing'),
           api.get('/settings/escalation'),
           api.get('/settings/reopen'),
           api.get('/settings/app-version'),
+          api.get('/settings/working-time'),
+          api.get('/settings/auto-reply'),
         ]);
         if (featRes.data?.data?.features) {
           setStudentServicesEnabled(featRes.data.data.features.studentServicesEnabled ?? true);
@@ -85,6 +116,8 @@ export default function SettingsPage() {
         if (escRes.data?.data?.escalation) setEscalation(escRes.data.data.escalation);
         if (reopenRes.data?.data?.reopen) setReopen(reopenRes.data.data.reopen);
         if (verRes.data?.data?.appVersion) setAppVersion(verRes.data.data.appVersion);
+        if (workRes.data?.data?.workingTime) setWorkingTime(workRes.data.data.workingTime);
+        if (replyRes.data?.data?.autoReply) setAutoReply(replyRes.data.data.autoReply);
       } catch (e) {
         console.error('Failed to load settings:', e);
         setErr('Some settings could not be loaded. Reload the page to try again.');
@@ -135,6 +168,9 @@ export default function SettingsPage() {
           recipientLabel: escalation.recipientLabel,
           intakeHours: Number(escalation.intakeHours),
           forwardedHours: Number(escalation.forwardedHours),
+          reportingChain: escalation.reportingChain,
+          finalAuthorityEmail: escalation.finalAuthorityEmail,
+          finalAuthorityLabel: escalation.finalAuthorityLabel,
         });
         if (res.data?.data?.escalation) setEscalation(res.data.data.escalation);
       },
@@ -155,6 +191,44 @@ export default function SettingsPage() {
       'Reopen policy saved.',
       'Failed to save reopen policy'
     );
+
+  const saveWorkingTime = () =>
+    save(
+      async () => {
+        const res = await api.patch('/settings/working-time', {
+          enabled: workingTime.enabled,
+          workingDays: workingTime.workingDays,
+          holidays: workingTime.holidays,
+        });
+        if (res.data?.data?.workingTime) setWorkingTime(res.data.data.workingTime);
+      },
+      'Working days saved.',
+      'Failed to save working days'
+    );
+
+  const saveAutoReply = () =>
+    save(
+      async () => {
+        const res = await api.patch('/settings/auto-reply', {
+          enabled: autoReply.enabled,
+          message: autoReply.message,
+        });
+        if (res.data?.data?.autoReply) setAutoReply(res.data.data.autoReply);
+      },
+      'Automatic reply saved.',
+      'Failed to save automatic reply'
+    );
+
+  const toggleWorkingDay = (day: number) =>
+    setWorkingTime((w) => {
+      const on = w.workingDays.includes(day);
+      // At least one day has to count, or every response window would freeze.
+      if (on && w.workingDays.length === 1) return w;
+      return {
+        ...w,
+        workingDays: on ? w.workingDays.filter((d) => d !== day) : [...w.workingDays, day].sort(),
+      };
+    });
 
   const saveAppVersion = () =>
     save(
@@ -296,6 +370,53 @@ export default function SettingsPage() {
               </p>
             </div>
 
+            <div className="border-t border-gray-100 pt-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-800">Escalate up the reporting chain</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Send an overdue concern to the holder&apos;s own reporting authority — an HOD&apos;s dean, say —
+                    instead of sending every escalation to one mailbox.
+                  </p>
+                </div>
+                <div className="mt-1 shrink-0">
+                  <Toggle
+                    checked={escalation.reportingChain}
+                    onChange={(v) => setEscalation({ ...escalation, reportingChain: v })}
+                  />
+                </div>
+              </div>
+
+              {escalation.reportingChain && (
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Final authority (email)</label>
+                    <input
+                      type="email"
+                      value={escalation.finalAuthorityEmail}
+                      onChange={(e) => setEscalation({ ...escalation, finalAuthorityEmail: e.target.value })}
+                      placeholder="e.g. vc@mru.edu.in"
+                      className={INPUT}
+                    />
+                    <p className="text-xs text-gray-400 mt-1">
+                      Told only when <strong>{escalation.recipientLabel || 'the escalation authority'}</strong> is
+                      the one who has not acted. Leave blank to stop the chain there.
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Their designation</label>
+                    <input
+                      type="text"
+                      value={escalation.finalAuthorityLabel}
+                      onChange={(e) => setEscalation({ ...escalation, finalAuthorityLabel: e.target.value })}
+                      placeholder="e.g. Vice Chancellor"
+                      className={INPUT}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-5 mt-2">
               <p className="text-sm font-semibold text-amber-900 mb-3">📌 How escalation works</p>
               <ol className="text-xs text-amber-800 leading-relaxed space-y-2 list-decimal list-inside">
@@ -314,8 +435,20 @@ export default function SettingsPage() {
                 </li>
                 <li>
                   A forwarded dean / HOD / director who does not act within{' '}
-                  <strong>{hoursLabel(escalation.forwardedHours)}</strong> is escalated to the same address.
+                  <strong>{hoursLabel(escalation.forwardedHours)}</strong> is escalated too —{' '}
+                  {escalation.reportingChain
+                    ? <>to <strong>their own reporting authority</strong> (an HOD goes to their school&apos;s dean, a dean to{' '}
+                      {escalation.recipientLabel || 'the escalation authority'}), so the office at the top only hears
+                      about the exceptions.</>
+                    : <>to the same address.</>}
                 </li>
+                {workingTime.enabled && (
+                  <li>
+                    These windows are counted in <strong>working time</strong>. A concern raised on Friday afternoon
+                    with a {hoursLabel(escalation.forwardedHours)} window is not overdue until Tuesday — the weekend
+                    is not counted.
+                  </li>
+                )}
                 <li>
                   The escalation email names <strong>the designation and email of whoever did not act</strong>, when they
                   were notified, and carries a message box with <strong>Reply</strong> (back to the One Stop desk) and{' '}
@@ -335,6 +468,159 @@ export default function SettingsPage() {
         )}
 
         <button onClick={saveEscalation} disabled={saving} className={SAVE_BTN}>Save Response Times</button>
+      </div>
+
+      {/* ── Working Days ── */}
+      <div className={CARD}>
+        <div className="flex items-start justify-between mb-1">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Working Days</h2>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Response windows are counted in working time, so a concern raised on a Friday is not overdue
+              before the university reopens.
+            </p>
+          </div>
+          <div className="mt-1">
+            <Toggle checked={workingTime.enabled} onChange={(v) => setWorkingTime({ ...workingTime, enabled: v })} />
+          </div>
+        </div>
+
+        {workingTime.enabled && (
+          <div className="mt-5 space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Days the university works</label>
+              <div className="flex flex-wrap gap-2">
+                {DAY_NAMES.map((name, day) => {
+                  const on = workingTime.workingDays.includes(day);
+                  return (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => toggleWorkingDay(day)}
+                      aria-pressed={on}
+                      className={`px-3.5 py-2 rounded-lg text-sm font-medium border transition-colors cursor-pointer ${
+                        on
+                          ? 'bg-[#8B1A1A] text-white border-[#8B1A1A]'
+                          : 'bg-white text-gray-500 border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      {name.slice(0, 3)}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-gray-400 mt-2">
+                Time on an unselected day does not count towards any response window.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">University holidays</label>
+              <div className="flex gap-2">
+                <input
+                  type="date"
+                  value={newHoliday}
+                  onChange={(e) => setNewHoliday(e.target.value)}
+                  className={INPUT}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!newHoliday || workingTime.holidays.includes(newHoliday)) return;
+                    setWorkingTime({ ...workingTime, holidays: [...workingTime.holidays, newHoliday].sort() });
+                    setNewHoliday('');
+                  }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 whitespace-nowrap cursor-pointer"
+                >
+                  Add
+                </button>
+              </div>
+
+              {workingTime.holidays.length > 0 ? (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {workingTime.holidays.map((d) => (
+                    <span key={d} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-100 text-sm text-gray-700">
+                      {d}
+                      <button
+                        type="button"
+                        onClick={() => setWorkingTime({ ...workingTime, holidays: workingTime.holidays.filter((h) => h !== d) })}
+                        className="text-gray-400 hover:text-red-600 cursor-pointer"
+                        aria-label={`Remove ${d}`}
+                      >
+                        &times;
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400 mt-2">No holidays declared. Weekends are already excluded above.</p>
+              )}
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-5">
+              <p className="text-sm font-semibold text-amber-900 mb-2">📌 What this changes</p>
+              <p className="text-xs text-amber-800 leading-relaxed">
+                A concern raised <strong>Friday at 4pm</strong> with a {hoursLabel(escalation.forwardedHours)} window
+                now falls due <strong>Tuesday at 4pm</strong>, not Sunday. The same rule is used to judge whether a
+                window was met, so the Super Admin response-time report does not count a weekend against anyone.
+              </p>
+            </div>
+          </div>
+        )}
+
+        <button onClick={saveWorkingTime} disabled={saving} className={SAVE_BTN}>Save Working Days</button>
+      </div>
+
+      {/* ── Automatic Acknowledgement ── */}
+      <div className={CARD}>
+        <div className="flex items-start justify-between mb-1">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">Automatic Reply</h2>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Sent to the student the moment their concern reaches the One Stop desk.
+            </p>
+          </div>
+          <div className="mt-1">
+            <Toggle checked={autoReply.enabled} onChange={(v) => setAutoReply({ ...autoReply, enabled: v })} />
+          </div>
+        </div>
+
+        {autoReply.enabled && (
+          <div className="mt-5 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+              <textarea
+                value={autoReply.message}
+                onChange={(e) => setAutoReply({ ...autoReply, message: e.target.value })}
+                rows={3}
+                maxLength={1000}
+                className={INPUT}
+              />
+              <p className="text-xs text-gray-400 mt-1">
+                {autoReply.message.trim().length}/1000. The ticket number, the concern, the desk holding it and the
+                expected response time are added automatically.
+              </p>
+            </div>
+
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-5">
+              <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Preview</p>
+              <p className="text-sm text-gray-800">Hi <strong>Aarav Sharma</strong>,</p>
+              <p className="text-sm text-gray-700 mt-2 leading-relaxed">
+                {autoReply.message.trim() || 'Your message will appear here.'}
+              </p>
+              <div className="mt-3 rounded-lg bg-[#b45309] text-white text-center py-3">
+                <p className="text-sm font-bold">In Progress</p>
+                <p className="text-xs opacity-85 mt-0.5">With the {routing.intakeLabel || 'One Stop desk'}</p>
+              </div>
+              <p className="text-xs text-gray-500 mt-3">
+                Expected response within <strong>{hoursLabel(escalation.intakeHours)}</strong>
+                {workingTime.enabled ? ', weekends and holidays not counted.' : '.'}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <button onClick={saveAutoReply} disabled={saving} className={SAVE_BTN}>Save Automatic Reply</button>
       </div>
 
       {/* ── Reopen Policy ── */}
