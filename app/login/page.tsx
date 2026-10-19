@@ -74,12 +74,28 @@ export default function LoginPage() {
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
-          <div className="px-8 pb-6 text-center border-t border-slate-100 pt-4">
+          {/* The leadership console is a separate portal with its own sign-in,
+              so it gets its own door here rather than a line of fine print. */}
+          <div className="px-8 pb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="h-px flex-1 bg-gray-200" />
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-400">or</span>
+              <span className="h-px flex-1 bg-gray-200" />
+            </div>
             <Link
               href="/super-admin/login"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#8B1A1A] transition"
+              className="group flex items-center gap-3 w-full px-4 py-3.5 rounded-xl border-2 border-[#8B1A1A]/20 hover:border-[#8B1A1A]/60 hover:bg-[#8B1A1A]/[0.03] transition-all"
             >
-              <span>🛡️</span> University Leadership & Super Admin Portal →
+              <span className="w-9 h-9 rounded-lg bg-[#8B1A1A]/10 grid place-items-center shrink-0">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8B1A1A" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </span>
+              <span className="min-w-0 flex-1 text-left">
+                <span className="block text-[14px] font-bold text-gray-900 leading-tight">Super Admin Portal</span>
+                <span className="block text-[11.5px] text-gray-500 leading-tight mt-0.5">University leadership · full analytics &amp; reports</span>
+              </span>
+              <span className="text-[#8B1A1A] text-lg transition-transform group-hover:translate-x-0.5" aria-hidden>&rarr;</span>
             </Link>
           </div>
         </div>

@@ -6,7 +6,6 @@ import api from '@/lib/api';
 
 const NAV = [
   { href: '/dashboard',          label: 'Dashboard',   icon: '🏠' },
-  { href: '/super-admin',        label: 'Super Admin', icon: '🛡️', badge: 'Monitor' },
   { href: '/dashboard/students', label: 'Students',    icon: '👥' },
   { href: '/dashboard/staff',    label: 'Staff',       icon: '👔' },
   { href: '/dashboard/schools',  label: 'Schools',     icon: '🏛️' },
@@ -51,11 +50,6 @@ export default function Sidebar() {
                 <span>{item.icon}</span>
                 {item.label}
               </div>
-              {item.badge && (
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950 uppercase tracking-wider">
-                  {item.badge}
-                </span>
-              )}
             </Link>
           );
         })}

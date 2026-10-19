@@ -18,7 +18,10 @@ api.interceptors.response.use(
     const isLoginRequest = err.config?.url?.includes('/admin/auth/login');
     if (err.response?.status === 401 && typeof window !== 'undefined' && !isLoginRequest) {
       useAuthStore.getState().clearAuth();
-      window.location.href = '/login';
+      // The leadership console has its own door — send an expired session back
+      // to the portal it came from, not to the departmental admin login.
+      const onSuperAdmin = window.location.pathname.startsWith('/super-admin');
+      window.location.href = onSuperAdmin ? '/super-admin/login' : '/login';
     }
     return Promise.reject(err);
   }
