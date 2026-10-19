@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 
@@ -19,7 +20,8 @@ export default function LoginPage() {
     try {
       const res = await api.post('/admin/auth/login', { email, password });
       setAuth(res.data.data.admin, res.data.data.accessToken);
-      router.push('/dashboard');
+      const redirect = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('redirect') : null;
+      router.push(redirect || '/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
     } finally {
@@ -72,6 +74,14 @@ export default function LoginPage() {
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
+          <div className="px-8 pb-6 text-center border-t border-slate-100 pt-4">
+            <Link
+              href="/super-admin/login"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#8B1A1A] transition"
+            >
+              <span>🛡️</span> University Leadership & Super Admin Portal →
+            </Link>
+          </div>
         </div>
       </div>
     </div>

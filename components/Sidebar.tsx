@@ -5,14 +5,15 @@ import { useAuthStore } from '@/lib/store';
 import api from '@/lib/api';
 
 const NAV = [
-  { href: '/dashboard',          label: 'Dashboard',  icon: '🏠' },
-  { href: '/dashboard/students', label: 'Students',   icon: '👥' },
-  { href: '/dashboard/staff',    label: 'Staff',      icon: '👔' },
-  { href: '/dashboard/schools',  label: 'Schools',    icon: '🏛️' },
+  { href: '/dashboard',          label: 'Dashboard',   icon: '🏠' },
+  { href: '/super-admin',        label: 'Super Admin', icon: '🛡️', badge: 'Monitor' },
+  { href: '/dashboard/students', label: 'Students',    icon: '👥' },
+  { href: '/dashboard/staff',    label: 'Staff',       icon: '👔' },
+  { href: '/dashboard/schools',  label: 'Schools',     icon: '🏛️' },
   { href: '/dashboard/categories', label: 'Categories', icon: '📂' },
-  { href: '/dashboard/requests', label: 'Requests',   icon: '📋' },
+  { href: '/dashboard/requests', label: 'Requests',    icon: '📋' },
   { href: '/dashboard/broadcasts', label: 'Announcements', icon: '📢' },
-  { href: '/dashboard/settings', label: 'Settings',   icon: '⚙️' },
+  { href: '/dashboard/settings', label: 'Settings',    icon: '⚙️' },
 ];
 
 export default function Sidebar() {
@@ -40,14 +41,21 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
                   ? 'bg-white text-[#8B1A1A]'
                   : 'text-red-100 hover:bg-red-700 hover:text-white'
               }`}
             >
-              <span>{item.icon}</span>
-              {item.label}
+              <div className="flex items-center gap-3">
+                <span>{item.icon}</span>
+                {item.label}
+              </div>
+              {item.badge && (
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950 uppercase tracking-wider">
+                  {item.badge}
+                </span>
+              )}
             </Link>
           );
         })}
